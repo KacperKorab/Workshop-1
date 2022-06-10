@@ -5,17 +5,16 @@ package pl.coderslab;
 DONE wyświetlanie wszystkich dostępnych zadań,
 DONE wyjście z aplikacji,
 DONE dodanie zadania, TODO check for valid date input
-Done usuwanie zadania,
+DONE usuwanie zadania,
 DONE wczytywanie danych z pliku przy starcie aplikacji,
-TODO zapis danych do pliku,
+DONE zapis danych do pliku,
 TODO sprawdzanie poprawność wartości liczbowej podczas usuwania.
 
 TODO test incorrect input
+TODO beautification
  */
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 import static java.lang.System.exit;
@@ -39,7 +38,7 @@ public class TaskManager {
                     case 1 -> add(records);
                     case 2 -> remove(records);
                     case 3 -> list(records);
-                    case 4 -> {
+                    case 4 -> {save(records);
                         System.out.println(ConsoleColors.WHITE_BOLD_BRIGHT + "Program terminated by user");
                         exit(0);
                     }
@@ -122,6 +121,25 @@ public class TaskManager {
             System.out.println(i + " : " + printList);
         }
         backToMenu();
+    }
+    private static void save(List<List<String>> records) {
+        try {
+            Writer fileWriter = new FileWriter("tasks.csv", false);
+            for (int i = 0; i < records.size(); i++) {
+                List<String> printList = records.get(i);
+                if (i>0) {
+                    fileWriter.write("\n");
+                }
+                for (String s : printList) {
+                    fileWriter.write(s + ",");
+                }
+            }
+            fileWriter.flush();
+            fileWriter.close();
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private static void backToMenu() { //Waits for user input, then goes back to menu
