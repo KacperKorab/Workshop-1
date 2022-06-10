@@ -4,17 +4,19 @@ package pl.coderslab;
 /*
 DONE wyświetlanie wszystkich dostępnych zadań,
 DONE wyjście z aplikacji,
-DONE dodanie zadania, TODO check for valid date input
+DONE dodanie zadania, DONE check for valid date input
 DONE usuwanie zadania,
 DONE wczytywanie danych z pliku przy starcie aplikacji,
 DONE zapis danych do pliku,
-TODO sprawdzanie poprawność wartości liczbowej podczas usuwania.
+TODO sprawdzanie poprawność wartości liczbowej podczas usuwania. ?
 
 TODO test incorrect input
 TODO beautification
  */
 
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.lang.System.exit;
@@ -38,12 +40,10 @@ public class TaskManager {
                     case 1 -> add(records);
                     case 2 -> remove(records);
                     case 3 -> list(records);
-                    case 4 -> {save(records);
-                        System.out.println(ConsoleColors.WHITE_BOLD_BRIGHT + "Program terminated by user");
-                        exit(0);
-                    }
+                    case 4 -> save(records);
+
                 }
-                if (option > options.length) { // User selected option larger than 4
+                if (option > options.length || option < 1) { // User selected option larger than 4
                     System.out.println(ConsoleColors.RED + "Incorrect input! Please enter an integer value between 1 and " + options.length);
                     System.out.print(ConsoleColors.RESET);
                 }
@@ -57,9 +57,10 @@ public class TaskManager {
                 System.out.println("An unexpected error happened. Please try again");
                 scanner.next();
             }
-        } // User Menu end
+        }
     }
 
+    // Turns selected file into a list, used in main.
     private static List<List<String>> csvIntoList() { // CSV Into ArrayList with print
         List<List<String>> records = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("tasks.csv"))) {
@@ -83,7 +84,8 @@ public class TaskManager {
         System.out.print("Choose your option : ");
     }
 
-    // Menu Options
+    // Menu Option "Add"
+    // Adds tasks based on user input
     private static void add(List<List<String>> records) {
         System.out.println("Enter task name:");
 
@@ -92,8 +94,17 @@ public class TaskManager {
         String userInput = String.valueOf(addScanner.nextLine());
         taskList.add(userInput);
 
-        System.out.println("Enter task deadline in yyyy-mm-dd format:"); //TODO check for proper input
-        String addDate = String.valueOf(addScanner.nextLine());
+        System.out.println("Enter task deadline in yyyy-mm-dd format:");
+        String addDate;
+        while (true) {
+            addDate = String.valueOf(addScanner.nextLine());
+            if ((isValidDate(addDate)) && isFutureDate(addDate)) {
+                break;
+            } else {
+                System.out.println(ConsoleColors.RED+"Bad input. The date must occur after today and be in the correct format.");
+                System.out.println(ConsoleColors.RESET+"Enter task deadline in yyyy-mm-dd format:");
+            }
+        }
         taskList.add(addDate);
 
         System.out.println("Is this task important? Enter '1' for yes or '2' for no.");
@@ -108,6 +119,8 @@ public class TaskManager {
         records.add(taskList);
     }
 
+    // Menu Option "Remove"
+    // Removes data by list index
     private static void remove(List<List<String>> records) {
         System.out.println("To remove a task enter it's number:");
         Scanner removeScanner = new Scanner(System.in);
@@ -115,6 +128,8 @@ public class TaskManager {
         records.remove(userInput);
     }
 
+    // Menu Option "List"
+    // Displays data list with indexes and waits for user to return to menu
     private static void list(List<List<String>> records) {
         for (int i = 0; i < records.size(); i++) {
             List<String> printList = records.get(i);
@@ -122,6 +137,9 @@ public class TaskManager {
         }
         backToMenu();
     }
+
+    // Menu Option "Exit"
+    // Overwrites "tasks.csv" with updated data list
     private static void save(List<List<String>> records) {
         try {
             Writer fileWriter = new FileWriter("tasks.csv", false);
@@ -140,9 +158,43 @@ public class TaskManager {
         catch (IOException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println(ConsoleColors.WHITE_BOLD_BRIGHT + "Program terminated by user");
+        exit(0);
     }
 
-    private static void backToMenu() { //Waits for user input, then goes back to menu
+    // Checks for proper user input when getting date in Add method
+    public static boolean isValidDate(String inDate) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false);
+        try {
+            dateFormat.parse(inDate.trim());
+        }
+        catch (ParseException pe) {
+            return false;
+        }
+        return true;
+    }
+
+    // Checks whether date entered by user is in the future, used in Add method
+    public static boolean isFutureDate(String args) {
+        Date date = new Date();
+        SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
+        Date inputDate = null;
+        try {
+            inputDate = sdformat.parse(args);
+        }
+        catch (ParseException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println(ConsoleColors.RED+"The input date is: " + sdformat.format(inputDate));
+        System.out.println("The current date is: " + sdformat.format(date));
+        System.out.print(ConsoleColors.RESET);
+        assert inputDate != null;
+        return inputDate.compareTo(date) > 0;
+    }
+
+    //Waits for user input, then goes back to menu, used in List method
+    private static void backToMenu() {
         System.out.println("Press 4 to go back to menu.");
         Scanner listScanner = new Scanner(System.in);
         int option = 0;
