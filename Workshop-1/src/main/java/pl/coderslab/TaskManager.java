@@ -2,11 +2,11 @@ package pl.coderslab;
 
 
 /*
-TODO wyświetlanie wszystkich dostępnych zadań,
-TODO wyjście z aplikacji,
+DONE wyświetlanie wszystkich dostępnych zadań,
+DONE wyjście z aplikacji,
 TODO dodanie zadania,
 TODO usuwanie zadania,
-TODO wczytywanie danych z pliku przy starcie aplikacji,
+DONE wczytywanie danych z pliku przy starcie aplikacji,
 TODO zapis danych do pliku,
 TODO sprawdzanie poprawność wartości liczbowej podczas usuwania.
  */
@@ -81,15 +81,26 @@ public class TaskManager {
 
     // Menu Options
     private static void add() {
-        System.out.println("You chose option 1.");
+        System.out.println("You chose option 1. Press 1 to go back to menu.");
+        backToMenu();
     }
     private static void remove() {
-        System.out.println("You chose option 2.");
+        System.out.println("You chose option 2. Press 1 to go back to menu.");
+        backToMenu();
     }
     private static void list(List<List<String>> records) {
-        System.out.println("You chose option 3.");
+        System.out.println("You chose option 3. Press 1 to go back to menu.");
         for (List<String> printList : records) {
             System.out.println(printList);
+        }
+        backToMenu();
+    }
+
+    private static void backToMenu() { //Waits for user input, then goes back to menu
+        Scanner listScanner = new Scanner(System.in);
+        int option = 0;
+        while (option != 1) {
+            option = listScanner.nextInt();
         }
     }
 }
