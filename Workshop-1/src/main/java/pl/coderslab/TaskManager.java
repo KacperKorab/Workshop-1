@@ -1,6 +1,5 @@
 package pl.coderslab;
 
-
 /*
 DONE wyświetlanie wszystkich dostępnych zadań,
 DONE wyjście z aplikacji,
@@ -10,8 +9,11 @@ DONE wczytywanie danych z pliku przy starcie aplikacji,
 DONE zapis danych do pliku,
 TODO sprawdzanie poprawność wartości liczbowej podczas usuwania. ?
 
-TODO test incorrect input
 TODO beautification
+
+TODO Bugfixing: testing
+TODO Bugfixing: check for int inside backToMenu
+TODO Bugfixing: improper input in Add true/false
  */
 
 import java.io.*;
