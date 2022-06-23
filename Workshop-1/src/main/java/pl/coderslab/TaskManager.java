@@ -7,7 +7,7 @@ DONE dodanie zadania, DONE check for valid date input
 DONE usuwanie zadania,
 DONE wczytywanie danych z pliku przy starcie aplikacji,
 DONE zapis danych do pliku,
-TODO sprawdzanie poprawność wartości liczbowej podczas usuwania. ?
+DONE sprawdzanie poprawność wartości liczbowej podczas usuwania.
 
 TODO beautification
 
@@ -127,6 +127,7 @@ public class TaskManager {
         System.out.println("To remove a task enter it's number:");
         Scanner removeScanner = new Scanner(System.in);
         int userInput = (removeScanner.nextInt());
+        //TODO Check input against list.size
         records.remove(userInput);
     }
 
